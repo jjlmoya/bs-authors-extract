@@ -23,6 +23,12 @@ registerBlockType('bonseo/block-bs-authors-extract', {
 		return (
 			<div>
 				<h2>Extracto de Autores</h2>
+				<TextControl
+					className={`${className}__title`}
+					label={__('Título del banner')}
+					value={attributes.title}
+					onChange={title => setAttributes({title})}
+				/>
 			</div>
 		);
 	},
