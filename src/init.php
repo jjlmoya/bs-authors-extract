@@ -18,6 +18,15 @@ $block = 'block-bs-authors-extract';
 // Hook server side rendering into render callback
 register_block_type('bonseo/' . $block,
 	array(
+		'attributes' => array(
+			'title' => array(
+				'type' => 'string',
+			),
+			'className' => array(
+				'type' => 'string',
+			)
+
+		),
 		'render_callback' => 'render_bs_authors_extract',
 	)
 );
@@ -71,39 +80,47 @@ function bs_authors_extract_editor_assets()
 
 function render_bs_authors_extract_entries($authors)
 {
+	$html = '';
 	while ($authors->have_posts()) : $authors->the_post();
 		$title = get_the_title();
 		$image = esc_url(get_the_post_thumbnail_url(get_the_ID()));
+		$description = get_the_content();
 		$link = esc_url(get_the_permalink());
-		return '
+		$position = get_post_meta(get_the_ID(), 'bs_publisher_position', TRUE);
+		$html .= '
 		<div class="ml-card-author l-flex l-flex--direction-column l-flex--justify-center l-column--1-3 l-column--mobile--2-3 a-pad">
 			<div class="ml-card-author__image l-flex-item--align-center l-column--1-1">
 				<picture class="a-pad l-column--1-1 a-pad-0">
 					<img class="a-image l-column--1-1" src="' . $image . '">
 					</picture>
 				</div>
-			<div class="ml-card-author__description a-pad">
-				<a href="' . $link . '" class="a-text a-text--underline a-text--bold a-text--s a-text--link">
-				' . $title . '
-				</a>
-				<p class="a-text a-text--bold">
-					Profesión
+			<div class="ml-card-author__description a-border--primary a-pad">
+				<h3>
+					<a href="' . $link . '" class="a-text a-text--underline a-text--bold a-text--link a-text--brand">
+						' . $title . '
+					</a>
+				</h3>
+				<p class="a-text a-text--bold a-text--xs ">
+					' . $position . '
 				</p>
-				<p class="a-text ">
-					Pequeña descripción
+				<p class="a-text a-pad--y">
+					' . $description . '
 				</p>
 			</div>
 		</div>';
 		unset($post);
 	endwhile;
+	return $html;
 }
 
-function render_bs_authors_extract()
+function render_bs_authors_extract($attributes)
 {
+	$class = isset($attributes['className']) ? ' ' . $attributes['className'] : '';
+	$title = isset($attributes['title']) ? $attributes['title'] : 'Nuestros Colaboradores:';
 	$args = array(
 		'post_type' => 'publisher',
 		'post_status' => 'publish',
-		'posts_per_page' => 0
+		'posts_per_page' => 3
 	);
 	$authors = new WP_Query($args);
 	if (empty($authors)) {
@@ -111,8 +128,11 @@ function render_bs_authors_extract()
 	}
 
 	return '
-	<section class="og-block-authors l-flex l-flex--justify-center l-flex--wrap a-pad-20 ">
+	<section class="og-block-authors a-pad-40' . $class . '">
+	<h2 class="a-text a-text--xl">' . $title . '</h2>
+		<div class="l-flex l-flex--justify-center l-flex--wrap a-pad--y">
 		' . render_bs_authors_extract_entries($authors) . '
+		</div>
 	</section>';
 }
 
