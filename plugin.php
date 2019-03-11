@@ -43,12 +43,12 @@ function bs_register_publisher_post_type()
 	 */
 
 	$labels = array(
-		"name" => __("Autores", "custom-post-type-ui"),
-		"singular_name" => __("Autor", "custom-post-type-ui"),
+		"name" => __("Servicios", "custom-post-type-ui"),
+		"singular_name" => __("Servicio", "custom-post-type-ui"),
 	);
 
 	$args = array(
-		"label" => __("Autores", "custom-post-type-ui"),
+		"label" => __("Servicios", "custom-post-type-ui"),
 		"labels" => $labels,
 		"description" => "",
 		"public" => true,
@@ -65,9 +65,9 @@ function bs_register_publisher_post_type()
 		"capability_type" => "post",
 		"map_meta_cap" => true,
 		"hierarchical" => false,
-		"rewrite" => array("slug" => "autor", "with_front" => true),
+		"rewrite" => array("slug" => "servicios", "with_front" => true),
 		"query_var" => true,
-		"supports" => array("title", "editor", "thumbnail", "custom-fields"),
+		"supports" => array("title", "editor", "thumbnail", "custom-fields", "excerpt"),
 	);
 
 	register_post_type("publisher", $args);

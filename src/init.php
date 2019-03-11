@@ -22,6 +22,9 @@ register_block_type('bonseo/' . $block,
 			'title' => array(
 				'type' => 'string',
 			),
+			'max_entries' => array(
+				'type' => 'string',
+			),
 			'className' => array(
 				'type' => 'string',
 			)
@@ -30,24 +33,6 @@ register_block_type('bonseo/' . $block,
 		'render_callback' => 'render_bs_authors_extract',
 	)
 );
-
-
-/**
- * Enqueue Gutenberg block assets for both frontend + backend.
- *
- * @uses {wp-editor} for WP editor styles.
- * @since 1.0.0
- */
-function bs_authors_extract_assets()
-{
-	wp_enqueue_style(
-		'bs_authors_extract-style-css',
-		plugins_url('dist/blocks.style.build.css', dirname(__FILE__)),
-		array('wp-editor')
-	);
-}
-
-add_action('enqueue_block_assets', 'bs_authors_extract_assets');
 
 /**
  * Enqueue Gutenberg block assets for backend editor.
@@ -67,14 +52,6 @@ function bs_authors_extract_editor_assets()
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor'), // Dependencies, defined above.
 		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: File modification time.
 		true // Enqueue the script in the footer.
-	);
-
-	// Styles.
-	wp_enqueue_style(
-		'bs_authors_extract-block-editor-css', // Handle.
-		plugins_url('dist/blocks.editor.build.css', dirname(__FILE__)), // Block editor CSS.
-		array('wp-edit-blocks') // Dependency to include the CSS after it.
-	// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: File modification time.
 	);
 }
 
@@ -116,19 +93,19 @@ function render_bs_authors_extract_entries($authors)
 function render_bs_authors_extract($attributes)
 {
 	$class = isset($attributes['className']) ? ' ' . $attributes['className'] : '';
+	$entries = isset($attributes['max_entries']) ? $attributes['max_entries'] : 0;
 	$title = isset($attributes['title']) ? $attributes['title'] : 'Nuestros Colaboradores:';
 	$args = array(
 		'post_type' => 'publisher',
 		'post_status' => 'publish',
-		'posts_per_page' => 3
+		'posts_per_page' => $entries
 	);
 	$authors = new WP_Query($args);
 	if (empty($authors)) {
 		return "";
 	}
-
 	return '
-	<section class="og-block-authors a-pad-40' . $class . '">
+	<section class="og-block-authors a-pad-40 ' . $class . '">
 	<h2 class="a-text a-text--xl">' . $title . '</h2>
 		<div class="l-flex l-flex--justify-center l-flex--wrap a-pad--y">
 		' . render_bs_authors_extract_entries($authors) . '
