@@ -61,7 +61,7 @@ function render_bs_authors_extract_entries($authors)
 	while ($authors->have_posts()) : $authors->the_post();
 		$title = get_the_title();
 		$image = esc_url(get_the_post_thumbnail_url(get_the_ID()));
-		$description = get_the_content();
+		$description = get_the_excerpt(get_the_ID());
 		$link = esc_url(get_the_permalink());
 		$position = get_post_meta(get_the_ID(), 'bs_publisher_position', TRUE);
 		$html .= '
