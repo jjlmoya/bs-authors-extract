@@ -74,6 +74,7 @@ function bs_register_publisher_post_type()
 }
 
 add_action('add_meta_boxes', 'bs_publisher_metabox_add');
+add_action('add_meta_boxes', 'bs_publisher_metabox_add_v2');
 function bs_publisher_metabox_add()
 {
 	add_meta_box(
@@ -87,14 +88,35 @@ function bs_publisher_metabox_add()
 }
 
 
+function bs_publisher_metabox_add_v2()
+{
+	add_meta_box(
+		'bs_theme_brand',
+		'Theme',
+		'bs_publisher_brand_action',
+		'publisher',
+		'side',
+		'high'
+	);
+}
+
+
 function bs_publisher_position_action()
 {
 	global $post;
 	wp_nonce_field(basename(__FILE__), 'bs_publisher_position');
-	var_dump($post);
 	$location = get_post_meta($post->ID, 'bs_publisher_position', true);
 	echo '<input type="text" name="bs_publisher_position" value="' . esc_textarea($location) . '" class="widefat">';
 }
+
+function bs_publisher_brand_action()
+{
+	global $post;
+	wp_nonce_field(basename(__FILE__), 'bs_theme_brand');
+	$location = get_post_meta($post->ID, 'bs_theme_brand', true);
+	echo '<input type="text" name="bs_theme_brand" value="' . esc_textarea($location) . '" class="widefat">';
+}
+
 
 add_action('init', 'bs_register_publisher_post_type');
 add_action('save_post', 'bs_publisher_on_save');
@@ -116,8 +138,13 @@ function bs_publisher_on_save($post_id)
 	if (!isset($_POST['bs_publisher_position'])) {
 		return;
 	}
-	$my_data = sanitize_text_field($_POST['bs_publisher_position']);
-	update_post_meta($post_id, 'bs_publisher_position', $my_data);
+	if (!isset($_POST['bs_theme_brand'])) {
+		return;
+	}
+	$myPosition = sanitize_text_field($_POST['bs_publisher_position']);
+	$myBrand = sanitize_text_field($_POST['bs_theme_brand']);
+	update_post_meta($post_id, 'bs_publisher_position', $myPosition);
+	update_post_meta($post_id, 'bs_theme_brand', $myBrand);
 }
 
 
