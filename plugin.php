@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Authors Extract [BonSeo Block]
- * Plugin URI: https://www.bonseo.es/wordpress-gutenberg-blocks/arrow-banner
+ * Plugin URI: https://www.bonseo.es/bloques-gutenberg/arrow-banner
  * Description: Un banner simple en forma de flecha
  * Author: jjlmoya
  * Author URI: https://www.bonseo.es/
