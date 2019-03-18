@@ -7,7 +7,9 @@
 
 const {__} = wp.i18n;
 const {registerBlockType} = wp.blocks;
-const {TextControl} = wp.components;
+const {SelectControl, TextControl} = wp.components;
+const {withSelect} = wp.data;
+
 
 registerBlockType('bonseo/block-bs-authors-extract', {
 	title: __('Authors Extract'),
@@ -18,7 +20,17 @@ registerBlockType('bonseo/block-bs-authors-extract', {
 		__('BonSeo'),
 		__('BonSeo Block'),
 	],
-	edit: function ({posts, className, attributes, setAttributes}) {
+	edit: withSelect((select) => {
+		const {getPostTypes} = select('core');
+		return {
+			types: getPostTypes(),
+		};
+	})( function (props) {
+		const {attributes, className, setAttributes} = props;
+		var types = props.types;
+		if (!props.types) {
+			return "Loading...";
+		}
 		return (
 			<div>
 				<h2>Extracto de Autores:</h2>
@@ -35,9 +47,21 @@ registerBlockType('bonseo/block-bs-authors-extract', {
 					value={attributes.max_entries}
 					onChange={max_entries => setAttributes({max_entries})}
 				/>
+				<SelectControl
+					label="Tipo de Post"
+					className={`${className}__type`}
+					value={attributes.type}
+					options={types.map((type) => {
+						return {
+							label: type.name,
+							value: type.slug
+						}
+					})}
+					onChange={type => setAttributes({type})}
+				/>
 			</div>
 		);
-	},
+	}),
 	save: function () {
 		return null;
 	}

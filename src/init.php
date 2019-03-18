@@ -25,6 +25,9 @@ register_block_type('bonseo/' . $block,
 			'max_entries' => array(
 				'type' => 'string',
 			),
+			'type' => array(
+				'type' => 'string',
+			),
 			'className' => array(
 				'type' => 'string',
 			)
@@ -66,7 +69,7 @@ function render_bs_authors_extract_entries($authors)
 		$position = get_post_meta(get_the_ID(), 'bs_publisher_position', TRUE);
 		$brand = get_post_meta(get_the_ID(), 'bs_theme_brand', TRUE);
 		$html .= '
-		<div class="ml-card-author l-flex l-flex--direction-column l-flex--justify-center l-column--1-3 l-column--mobile--2-3 a-pad '.$brand.'">
+		<div class="ml-card-author l-flex l-flex--direction-column l-flex--justify-center l-column--1-3 l-column--mobile--2-3 a-pad ' . $brand . '">
 			<div class="ml-card-author__image l-flex-item--align-center l-column--1-1">
 				<picture class="a-pad l-column--1-1 a-pad-0">
 					<img class="a-image l-column--1-1" src="' . $image . '">
@@ -96,8 +99,9 @@ function render_bs_authors_extract($attributes)
 	$class = isset($attributes['className']) ? ' ' . $attributes['className'] : '';
 	$entries = isset($attributes['max_entries']) ? $attributes['max_entries'] : 0;
 	$title = isset($attributes['title']) ? $attributes['title'] : 'Nuestros Colaboradores:';
+	$type = isset($attributes['type']) ? $attributes['type'] : 'bs-service';
 	$args = array(
-		'post_type' => 'publisher',
+		'post_type' => $type,
 		'post_status' => 'publish',
 		'posts_per_page' => $entries
 	);
