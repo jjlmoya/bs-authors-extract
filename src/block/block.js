@@ -65,5 +65,4 @@ registerBlockType('bonseo/block-bs-authors-extract', {
 	save: function () {
 		return null;
 	}
-})
-;
+});
